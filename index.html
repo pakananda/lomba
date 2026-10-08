@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelapor Muda - Berani Peduli, Aman Melapor</title>
+    <style>
+        :root {
+            --navy: #092B55;
+            --blue-primary: #1261A6;
+            --blue-secondary: #3D8FD1;
+            --baby-blue: #B9E3FA;
+            --baby-light: #EBF6FF;
+            --white: #FFFFFF;
+            --gray-100: #F4F8FC;
+            --gray-200: #E8EEF5;
+            --gray-400: #9AA8B6;
+            --gray-600: #64748B;
+            --gray-800: #1E293B;
+            --text-main: #172033;
+            --green: #10B981;
+            --yellow: #F59E0B;
+            --red: #EF4444;
+            --border: #DCE6F0;
+            --shadow-sm: 0 2px 8px rgba(18, 97, 166, 0.05);
+            --shadow-md: 0 8px 24px rgba(18, 97, 166, 0.08);
+            --shadow-lg: 0 16px 32px rgba(9, 43, 85, 0.12);
+            --sidebar-width: 260px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #F0F5FA;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(185, 227, 250, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(61, 143, 209, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button, input, select, textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        /* App Container Layout */
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Desktop Sidebar (Only visible >= 992px) */
+        .desktop-sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            z-index: 40;
+            padding: 24px 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 24px 12px;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-brand .logo-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--navy), var(--blue-primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(18, 97, 166, 0.25);
+        }
+
+        .sidebar-brand-text h1 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand-text p {
+            font-size: 11px;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: transparent;
+            text-align: left;
+            width: 100%;
+        }
+
+        .sidebar-item:hover {
+            background: var(--baby-light);
+            color: var(--blue-primary);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(18, 97, 166, 0.2);
+        }
+
+        .sidebar-item .icon {
+            font-size: 18px;
+        }
+
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Main Content Wrapper */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding-bottom: 80px; /* Space for Mobile Nav */
+        }
+
+        /* Desktop Header Topbar */
+        .header-topbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            padding: 12px 20px;
+        }
+
+        .topbar-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .mobile-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-brand .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--navy), var(--blue-primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .mobile-brand-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .mobile-brand-sub {
+            font-size: 10px;
+            color: var(--gray-600);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .action-icon-btn:hover {
+            background: var(--baby-light);
+            color: var(--blue-primary);
+            border-color: var(--baby-blue);
+        }
+
+        .badge-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+
+        /* Container for Main Pages */
+        .content-area {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 16px;
+            flex: 1;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Universal Card Components */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, #104A7B 50%, var(--blue-primary) 100%);
+            border-radius: 24px;
+            padding: 28px 24px;
+            color: var(--white);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-banner::after {
+            content: "";
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(185, 227, 250, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+        }
+
+        .hero-banner h2 {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 10px;
+        }
+
+        .hero-banner p {
+            font-size: 13px;
+            color: var(--baby-light);
+            line-height: 1.6;
+            max-width: 600px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 16px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--navy);
+            margin: 24px 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-sub {
+            color: var(--gray-600);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--white), #F4F9FD);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--baby-blue), var(--blue-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(61, 143, 209, 0.2);
+        }
+
+        /* Quick Action Cards */
+        .quick-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--baby-blue);
+        }
+
+        .quick-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--baby-light);
+            color: var(--blue-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .quick-card strong {
+            font-size: 14px;
+            color: var(--navy);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .quick-card span {
+            font-size: 11px;
+            color: var(--gray-600);
+            line-height: 1.4;
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(18, 97, 166, 0.25);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 18px rgba(18, 97, 166, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--baby-light);
+            color: var(--navy);
+            border: 1px solid var(--baby-blue);
+        }
+
+        .btn-secondary:hover {
+            background: #DDF0FD;
+        }
+
+        .btn-outline {
+            background: var(--white);
+            border: 1px solid var(--border);
+            color: var(--navy);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-100);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Form Components */
+        .progress-bar {
+            display: flex;
+            gap: 6px;
+            margin: 16px 0 24px;
+        }
+
+        .progress-step {
+            height: 6px;
+            flex: 1;
+            border-radius: 10px;
+            background: var(--gray-200);
+            transition: background 0.3s;
+        }
+
+        .progress-step.active {
+            background: var(--blue-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--gray-100);
+            padding: 12px 14px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 13px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--blue-secondary);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(61, 143, 209, 0.15);
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .hint {
+            color: var(--gray-600);
+            font-size: 11px;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .choice-btn {
+            border: 1px solid var(--border);
+            background: var(--white);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .choice-btn.selected {
+            border-color: var(--blue-secondary);
+            background: var(--baby-light);
+            color: var(--navy);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(61, 143, 209, 0.15);
+        }
+
+        .check-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .check-card input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--blue-primary);
+            cursor: pointer;
+        }
+
+        .check-card span {
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        /* Privacy Banner */
+        .privacy-box {
+            background: linear-gradient(135deg, var(--baby-light), #F0F8FF);
+            border: 1px solid var(--baby-blue);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #2C5282;
+            margin: 16px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-badge.pending { background: #FEF3C7; color: #D97706; }
+        .status-badge.process { background: #E0F2FE; color: #0284C7; }
+        .status-badge.done { background: #D1FAE5; color: #059669; }
+
+        /* Timeline Components */
+        .timeline {
+            margin-top: 20px;
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--gray-200);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -28px;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            border: 3px solid var(--white);
+            box-shadow: 0 0 0 1px var(--border);
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--blue-secondary);
+            box-shadow: 0 0 0 3px rgba(61, 143, 209, 0.2);
+        }
+
+        .timeline-item strong {
+            font-size: 13px;
+            color: var(--navy);
+        }
+
+        .timeline-item p {
+            font-size: 11px;
+            color: var(--gray-600);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        /* Nala AI Assistant Chat UI */
+        .nala-card {
+            background: linear-gradient(135deg, var(--navy), var(--blue-primary));
+            border-radius: 20px;
+            padding: 20px;
+            color: var(--white);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nala-avatar {
+            width: 56px;
+            height: 56px;
+            background: var(--white);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .bubble.bot {
+            align-self: flex-start;
+            background: var(--white);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+        }
+
+        .bubble.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 8px;
+        }
+
+        .question-btn {
+            text-align: left;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: var(--navy);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .question-btn:hover {
+            background: var(--baby-light);
+            border-color: var(--baby-blue);
+        }
+
+        /* Quiz Options */
+        .quiz-option {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: var(--gray-100);
+        }
+
+        .quiz-option.correct {
+            background: #E6F4EA;
+            border-color: var(--green);
+            color: #137333;
+            font-weight: 600;
+        }
+
+        .quiz-option.wrong {
+            background: #FCE8E6;
+            border-color: var(--red);
+            color: #C5221F;
+        }
+
+        /* KPI Dashboard Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .kpi-card small {
+            font-size: 11px;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .kpi-card strong {
+            display: block;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-top: 4px;
+        }
+
+        /* Profile & Menu Lists */
+        .menu-list {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-200);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:last-child { border-bottom: none; }
+
+        .menu-item:hover {
+            background: var(--baby-light);
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--baby-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--blue-primary);
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .menu-text strong {
+            display: block;
+            font-size: 13px;
+            color: var(--navy);
+        }
+
+        .menu-text span {
+            font-size: 11px;
+            color: var(--gray-600);
+        }
+
+        /* Notifications */
+        .notification-card {
+            padding: 16px;
+            background: var(--white);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+
+        .notification-card.unread {
+            border-left: 4px solid var(--blue-secondary);
+            background: #FAFDFZ;
+        }
+
+        /* Mobile Bottom Navbar (Only visible < 992px) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 50;
+            padding: 0 8px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-btn {
+            border: 0;
+            background: transparent;
+            color: var(--gray-600);
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .nav-btn .nav-icon {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .nav-btn.active {
+            color: var(--blue-primary);
+            font-weight: 700;
+        }
+
+        .nav-btn.active .nav-icon {
+            transform: translateY(-2px);
+        }
+
+        /* Toast & Modal */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translate(-50%, 20px);
+            background: var(--navy);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(9, 43, 85, 0.45);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 90;
+            padding: 20px;
+        }
+
+        .modal.show { display: flex; }
+
+        .modal-box {
+            width: 100%;
+            max-width: 480px;
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            animation: modalUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalUp {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Media Queries for Desktop & Tablet Responsiveness */
+        @media (min-width: 992px) {
+            .desktop-sidebar {
+                display: flex;
+            }
+
+            .main-wrapper {
+                margin-left: var(--sidebar-width);
+                padding-bottom: 20px;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            .header-topbar {
+                padding: 16px 32px;
+            }
+
+            .mobile-brand {
+                display: none;
+            }
+
+            .content-area {
+                padding: 32px;
+            }
+
+            .grid-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-4 {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .question-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .toast {
+                bottom: 30px;
+                left: calc(50% + (var(--sidebar-width) / 2));
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- DESKTOP SIDEBAR -->
+        <aside class="desktop-sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-box">🛡️</div>
+                <div class="sidebar-brand-text">
+                    <h1>PELAPOR MUDA</h1>
+                    <p>Berani Peduli • Aman Melapor</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <button class="sidebar-item active" id="desk-nav-home" onclick="openPage('home')">
+                    <span class="icon">⌂</span> Beranda
+                </button>
+                <button class="sidebar-item" id="desk-nav-report" onclick="openPage('report')">
+                    <span class="icon">📝</span> Buat Pengaduan
+                </button>
+                <button class="sidebar-item" id="desk-nav-status" onclick="openPage('status')">
+                    <span class="icon">📍</span> Status Laporan
+                </button>
+                <button class="sidebar-item" id="desk-nav-nala" onclick="openPage('nala')">
+                    <span class="icon">🤖</span> Tanya Nala AI
+                </button>
+                <button class="sidebar-item" id="desk-nav-education" onclick="openPage('education')">
+                    <span class="icon">📚</span> Edukasi & Kuis
+                </button>
+                <button class="sidebar-item" id="desk-nav-school" onclick="openPage('school')">
+                    <span class="icon">🏫</span> Verifikasi Sekolah
+                </button>
+                <button class="sidebar-item" id="desk-nav-profile" onclick="openPage('profile')">
+                    <span class="icon">👤</span> Profil Pelajar
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="privacy-box" style="margin:0; font-size:11px;">
+                    🛡️ Sistem Terverifikasi Sekolah & Pihak Terkait.
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+
+            <!-- TOPBAR HEADER -->
+            <header class="header-topbar">
+                <div class="topbar-content">
+                    <div class="mobile-brand">
+                        <div class="logo">🛡️</div>
+                        <div>
+                            <div class="mobile-brand-title">PELAPOR MUDA</div>
+                            <div class="mobile-brand-sub">Aman & Terverifikasi</div>
+                        </div>
+                    </div>
+
+                    <div style="font-weight: 700; color: var(--navy); font-size: 16px;" class="desktop-only-title" id="pageTitleDisplay">
+                        Beranda
+                    </div>
+
+                    <div class="header-actions">
+                        <button class="action-icon-btn" onclick="openPage('notifications')" title="Notifikasi">
+                            🔔
+                            <span class="badge-dot"></span>
+                        </button>
+                        <button class="action-icon-btn" onclick="openPage('profile')" title="Profil">
+                            👤
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <main class="content-area">
+
+                <!-- ================= HOME PAGE ================= -->
+                <section class="page active" id="home">
+                    <div class="hero-banner">
+                        <span class="hero-badge">SMART REPORTING SYSTEM</span>
+                        <h2>Melapor dengan bukti.<br>Menjaga dengan bijak.</h2>
+                        <p>Ruang digital bagi pelajar untuk menyampaikan permasalahan secara aman, terarah, dan terverifikasi melalui kolaborasi sekolah dan pihak terkait.</p>
+                    </div>
+
+                    <div class="welcome-card">
+                        <div>
+                            <h3 style="font-size:18px; color:var(--navy); font-weight:800; margin-bottom:4px;">Halo, Pelajar! 👋</h3>
+                            <p style="font-size:12px; color:var(--gray-600); line-height:1.5;">Punya sesuatu yang perlu diperhatikan? Kamu tidak harus menghadapinya sendirian.</p>
+                        </div>
+                        <div class="welcome-avatar">🤖</div>
+                    </div>
+
+                    <div class="section-title">Apa yang ingin kamu lakukan?</div>
+
+                    <div class="grid-4">
+                        <div class="quick-card" onclick="openPage('report')">
+                            <div>
+                                <div class="quick-icon-box">📝</div>
+                                <strong>Buat Pengaduan</strong>
+                                <span>Sampaikan kejadian dengan informasi yang jelas.</span>
+                            </div>
+                        </div>
+
+                        <div class="quick-card" onclick="openPage('nala')">
+                            <div>
+                                <div class="quick-icon-box">🤖</div>
+                                <strong>Tanya Nala AI</strong>
+                                <span>Dapatkan panduan sebelum membuat laporan.</span>
+                            </div>
+                        </div>
+
+                        <div class="quick-card" onclick="openPage('status')">
+                            <div>
+                                <div class="quick-icon-box">📍</div>
+                                <strong>Status Laporan</strong>
+                                <span>Lihat proses laporan yang telah dikirim.</span>
+                            </div>
+                        </div>
+
+                        <div class="quick-card" onclick="openPage('education')">
+                            <div>
+                                <div class="quick-icon-box">📚</div>
+                                <strong>Edukasi Hukum</strong>
+                                <span>Belajar keamanan dan kesadaran hukum.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Prinsip Pelapor Muda</div>
+
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="check-card" style="border:none; background:transparent; padding:0;">
+                                <span style="font-size:20px;">🔎</span>
+                                <div>
+                                    <strong style="font-size:13px; color:var(--navy);">Fakta, bukan tuduhan.</strong>
+                                    <p style="font-size:11px; color:var(--gray-600); margin-top:2px;">Laporan harus berdasarkan informasi yang dapat dipertanggungjawabkan.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="check-card" style="border:none; background:transparent; padding:0;">
+                                <span style="font-size:20px;">⚖️</span>
+                                <div>
+                                    <strong style="font-size:13px; color:var(--navy);">Tidak main hakim sendiri.</strong>
+                                    <p style="font-size:11px; color:var(--gray-600); margin-top:2px;">Laporan akan melalui proses verifikasi resmi sebelum tindak lanjut.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="privacy-box">
+                        <span style="font-size:18px;">🛡️</span>
+                        <div>
+                            <strong>Catatan Keamanan:</strong> Pelapor tidak perlu mengambil risiko untuk mendapatkan bukti. Jangan menghadapi pelaku atau menyebarkan bukti secara publik.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= REPORT WIZARD PAGE ================= -->
+                <section class="page" id="report">
+                    <div class="section-title" style="margin-top:0;">Buat Pengaduan</div>
+                    <p class="section-sub">Isi informasi berdasarkan apa yang kamu ketahui. Laporan akan masuk ke tahap verifikasi sekolah terlebih dahulu.</p>
+
+                    <div class="progress-bar">
+                        <span id="p1" class="progress-step active"></span>
+                        <span id="p2" class="progress-step"></span>
+                        <span id="p3" class="progress-step"></span>
+                    </div>
+
+                    <!-- STEP 1 -->
+                    <div class="form-step active" id="step1">
+                        <div class="card">
+                            <h3 style="font-size:15px; color:var(--navy); margin-bottom:8px;">Sebelum Melapor</h3>
+                            <p class="section-sub">Pastikan laporan dibuat untuk membantu penyelesaian masalah, bukan untuk balas dendam, mempermalukan, atau menyebarkan tuduhan.</p>
+
+                            <div class="check-card">
+                                <input type="checkbox" id="factCheck">
+                                <span>Saya akan menuliskan informasi sesuai dengan fakta yang saya ketahui.</span>
+                            </div>
+
+                            <div class="check-card">
+                                <input type="checkbox" id="notRevenge">
+                                <span>Laporan ini dibuat murni untuk penyelesaian masalah dan bukan balas dendam.</span>
+                            </div>
+
+                            <div class="check-card">
+                                <input type="checkbox" id="privacyCheck">
+                                <span>Saya memahami bahwa laporan akan diverifikasi terlebih dahulu oleh tim sekolah.</span>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="btn btn-primary btn-full" onclick="nextStep(2)">Lanjutkan Pengaduan →</button>
+                            <button class="btn btn-secondary btn-full" onclick="openPage('nala')">🤖 Tanya Nala AI Dulu</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div class="form-step" id="step2" style="display:none;">
+                        <div class="card">
+                            <div class="form-group">
+                                <label>Jenis Kejadian</label>
+                                <select id="category">
+                                    <option value="">Pilih Kategori Kejadian</option>
+                                    <option>Perundungan (Bullying)</option>
+                                    <option>Kekerasan Fisik / Verbal</option>
+                                    <option>Tawuran Pelajar</option>
+                                    <option>Pemalakan / Pemerasan</option>
+                                    <option>Ancaman / Intimidasi</option>
+                                    <option>Pelecehan Seksual</option>
+                                    <option>Penyalahgunaan Zat / Miras</option>
+                                    <option>Kenakalan Remaja Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tingkat Urgensi</label>
+                                <div class="choice-grid">
+                                    <button type="button" class="choice-btn" onclick="selectUrgency(this,'Rendah')">🟢<br>Rendah</button>
+                                    <button type="button" class="choice-btn" onclick="selectUrgency(this,'Sedang')">🟡<br>Sedang</button>
+                                    <button type="button" class="choice-btn" onclick="selectUrgency(this,'Tinggi')">🔴<br>Tinggi</button>
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>Waktu Kejadian</label>
+                                    <input type="datetime-local" id="eventDate">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Lokasi Kejadian</label>
+                                    <input type="text" id="location" placeholder="Contoh: Kantin sekolah, Kelas X, Jalan Raya">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pihak Terlibat (Terduga/Saksi)</label>
+                                <input type="text" id="people" placeholder="Tuliskan informasi seperlunya tanpa prasangka">
+                                <div class="hint">Hindari menuliskan data pribadi spesifik yang tidak diperlukan.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kronologi Kejadian</label>
+                                <textarea id="chronology" placeholder="Jelaskan apa yang terjadi secara rinci dan urut..."></textarea>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-outline" style="flex:1;" onclick="nextStep(1)">← Kembali</button>
+                            <button class="btn btn-primary" style="flex:1;" onclick="nextStep(3)">Lanjut →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3 -->
+                    <div class="form-step" id="step3" style="display:none;">
+                        <div class="card">
+                            <div class="form-group">
+                                <label>Bukti Pendukung (Foto/Dokumen)</label>
+                                <input type="file" id="evidence" accept="image/*,video/*,.pdf">
+                                <div class="hint">Bukti bersifat opsional. Jangan pernah mengambil bukti dengan membahayakan diri sendiri.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama / Identitas Pelapor</label>
+                                <input type="text" id="reporter" placeholder="Nama Lengkap / NISN (Rahasia)">
+                                <div class="hint">Identitas hanya digunakan untuk verifikasi internal sekolah & tidak dipublikasikan.</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="font-size:14px; color:var(--navy); margin-bottom:12px;">Pemeriksaan Akhir</h3>
+                            <div class="check-card"><input type="checkbox" id="final1"> <span>Informasi yang saya buat sudah sesuai dengan kebenaran.</span></div>
+                            <div class="check-card"><input type="checkbox" id="final2"> <span>Saya tidak secara sengaja membuat laporan tuduhan palsu.</span></div>
+                            <div class="check-card"><input type="checkbox" id="final3"> <span>Saya berjanji tidak menyebarkan bukti ini ke media sosial.</span></div>
+                            <div class="check-card"><input type="checkbox" id="final4"> <span>Saya bersedia dihubungi tim sekolah jika diperlukan verifikasi.</span></div>
+                        </div>
+
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-outline" style="flex:1;" onclick="nextStep(2)">← Kembali</button>
+                            <button class="btn btn-primary" style="flex:1;" onclick="submitReport()">Kirim Pengaduan</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= SUBMITTED SUCCESS PAGE ================= -->
+                <section class="page" id="submitted">
+                    <div class="card" style="text-align:center; padding:36px 20px;">
+                        <div style="width:72px; height:72px; margin:0 auto 16px; border-radius:50%; background:#D1FAE5; color:var(--green); display:flex; align-items:center; justify-content:center; font-size:36px;">✓</div>
+                        <h2 style="font-size:22px; color:var(--navy); margin-bottom:8px;">Pengaduan Diterima</h2>
+                        <p class="section-sub">Laporanmu berhasil masuk ke tahap verifikasi sekolah.</p>
+
+                        <div class="privacy-box" style="text-align:left; max-width:400px; margin:20px auto;">
+                            <div>
+                                <small style="display:block; color:var(--gray-600);">Nomor Tiket Laporan</small>
+                                <strong id="reportNumber" style="font-size:20px; color:var(--navy);">PM-0248</strong>
+                            </div>
+                        </div>
+
+                        <p style="font-size:11px; color:var(--gray-600); max-width:400px; margin:0 auto 24px;">Laporan yang diterima belum berarti informasi langsung terbukti. Tim sekolah akan melakukan pengecekan faktual secara obyektif.</p>
+
+                        <div style="display:flex; gap:10px; justify-content:center; max-width:400px; margin:0 auto;">
+                            <button class="btn btn-primary btn-full" onclick="openPage('status')">Lihat Status Laporan →</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= STATUS PAGE ================= -->
+                <section class="page" id="status">
+                    <div class="section-title" style="margin-top:0;">Status Laporan Saya</div>
+
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-200); padding-bottom:14px; margin-bottom:16px;">
+                            <div>
+                                <small style="color:var(--gray-600); font-size:11px;">Nomor Laporan</small>
+                                <h3 style="font-size:18px; color:var(--navy); font-weight:800;">PM-0248</h3>
+                            </div>
+                            <span class="status-badge process">● Dalam Proses</span>
+                        </div>
+
+                        <div class="timeline">
+                            <div class="timeline-item active">
+                                <div class="timeline-dot"></div>
+                                <strong>Pengaduan Diterima</strong>
+                                <p>Laporan telah masuk ke dalam sistem pengaduan sekolah.</p>
+                            </div>
+
+                            <div class="timeline-item active">
+                                <div class="timeline-dot"></div>
+                                <strong>Verifikasi Tim Sekolah</strong>
+                                <p>Informasi sedang dikonfirmasi oleh guru BK & kesiswaan secara tertutup.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <strong>Koordinasi & Tindak Lanjut</strong>
+                                <p>Pemeriksaan mendalam dan pemanggilan pihak terkait jika diperlukan.</p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <strong>Selesai</strong>
+                                <p>Laporan selesai ditangani dengan solusi yang disepakati.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= NALA AI ASSISTANT ================= -->
+                <section class="page" id="nala">
+                    <div class="nala-card">
+                        <div class="nala-avatar">🤖</div>
+                        <div>
+                            <h3 style="font-size:18px; margin-bottom:4px;">Nala AI Assistant</h3>
+                            <p style="font-size:12px; opacity:0.9;">Asisten pintar edukasi & panduan pelaporan siswa.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="chat-box" id="chat">
+                            <div class="bubble bot">
+                                Halo! 👋 Aku Nala. Kamu bisa menanyakan hal-hal seputar tata cara melapor, keamanan identitas, atau situasi darurat di bawah ini.
+                            </div>
+                        </div>
+
+                        <div class="question-grid">
+                            <button class="question-btn" onclick="askNala('kapan')">💬 Kapan sebaiknya saya melapor? <span>→</span></button>
+                            <button class="question-btn" onclick="askNala('bukti')">📎 Bukti apa yang perlu disiapkan? <span>→</span></button>
+                            <button class="question-btn" onclick="askNala('fitnah')">⚖️ Bagaimana agar tidak jadi fitnah? <span>→</span></button>
+                            <button class="question-btn" onclick="askNala('aman')">🔐 Apakah identitas saya aman? <span>→</span></button>
+                            <button class="question-btn" onclick="askNala('darurat')">🚨 Bagaimana jika situasi darurat? <span>→</span></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= EDUCATION PAGE ================= -->
+                <section class="page" id="education">
+                    <div class="section-title" style="margin-top:0;">Edukasi & Kesadaran Hukum</div>
+                    <p class="section-sub">Kenali hak-hakmu, pahami aturan hukum, dan tingkatkan kesadaran keamanan digital.</p>
+
+                    <div class="grid-2">
+                        <div class="card">
+                            <div style="font-size:28px; margin-bottom:8px;">🛡️</div>
+                            <h4 style="font-size:15px; color:var(--navy); margin-bottom:6px;">Kenali Perundungan (Bullying)</h4>
+                            <p style="font-size:12px; color:var(--gray-600); line-height:1.5;">Perundungan dapat berupa verbal, fisik, maupun sosial yang diulang secara sengaja untuk merugikan korban.</p>
+                        </div>
+
+                        <div class="card">
+                            <div style="font-size:28px; margin-bottom:8px;">📱</div>
+                            <h4 style="font-size:15px; color:var(--navy); margin-bottom:6px;">Keamanan Etika Digital</h4>
+                            <p style="font-size:12px; color:var(--gray-600); line-height:1.5;">Jangan membagikan rekaman kekerasan ke media sosial karena dapat melanggar UU ITE dan memperkeruh situasi.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="font-size:15px; color:var(--navy); margin-bottom:8px;">Mini Quiz Interaktif</h3>
+                        <p class="section-sub">Kamu melihat pesan yang menyebarkan fitnah tentang teman di grup kelas. Apa tindakan terbaik?</p>
+
+                        <div class="quiz-option" onclick="quiz(this,false)">A. Langsung membagikan ulang pesan tersebut ke grup sekolah.</div>
+                        <div class="quiz-option" onclick="quiz(this,true)">B. Mengingatkan pengirim & menyarankan untuk melaporkannya melalui jalur resmi.</div>
+                        <div class="quiz-option" onclick="quiz(this,false)">C. Mengirimkan balasan berisi cacian kepada pengirim pesan.</div>
+
+                        <div id="quizResult" style="font-size:12px; margin-top:12px; font-weight:700;"></div>
+                    </div>
+                </section>
+
+                <!-- ================= SCHOOL DASHBOARD ================= -->
+                <section class="page" id="school">
+                    <div class="section-title" style="margin-top:0;">Dashboard Verifikasi Sekolah</div>
+                    <p class="section-sub">Simulasi tampilan untuk Guru BK / Pihak Sekolah dalam mengelola pengaduan masuk.</p>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-card"><small>Diterima</small><strong>12</strong></div>
+                        <div class="kpi-card"><small>Verifikasi</small><strong>5</strong></div>
+                        <div class="kpi-card"><small>Koordinasi</small><strong>3</strong></div>
+                        <div class="kpi-card"><small>Selesai</small><strong>4</strong></div>
+                    </div>
+
+                    <div class="section-title">Pengaduan Perlu Diperiksa</div>
+
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <small style="font-size:10px; color:var(--gray-600);">Tiket: PM-0248</small>
+                                <h3 style="font-size:15px; color:var(--navy); margin-top:2px;">Perundungan Verbal Di Kelas</h3>
+                            </div>
+                            <span class="status-badge pending">Verifikasi</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--gray-600); margin:12px 0; line-height:1.5;">Laporan membutuhkan konfirmasi saksi dan pengecekan kronologi kejadian.</p>
+                        <button class="btn btn-primary btn-full" onclick="showToast('Mode Verifikasi Aktif dalam Prototipe')">Buka Detail Pengaduan</button>
+                    </div>
+                </section>
+
+                <!-- ================= NOTIFICATIONS PAGE ================= -->
+                <section class="page" id="notifications">
+                    <div class="section-title" style="margin-top:0;">Notifikasi</div>
+
+                    <div class="notification-card unread">
+                        <strong style="font-size:13px; color:var(--navy);">📩 Laporan Terverifikasi</strong>
+                        <p style="font-size:11px; color:var(--gray-600); margin-top:4px;">Laporan PM-0248 telah diverifikasi oleh Guru BK dan masuk tahap koordinasi.</p>
+                    </div>
+
+                    <div class="notification-card">
+                        <strong style="font-size:13px; color:var(--navy);">🛡️ Pengingat Keamanan</strong>
+                        <p style="font-size:11px; color:var(--gray-600); margin-top:4px;">Selalu lindungi data pribadi dan rahasia identitasmu saat melapor.</p>
+                    </div>
+                </section>
+
+                <!-- ================= PROFILE PAGE ================= -->
+                <section class="page" id="profile">
+                    <div class="card" style="display:flex; align-items:center; gap:16px;">
+                        <div style="width:64px; height:64px; border-radius:50%; background:var(--baby-light); color:var(--navy); font-size:24px; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid var(--baby-blue);">
+                            P
+                        </div>
+                        <div>
+                            <h2 style="font-size:18px; color:var(--navy);">Pelajar Demo</h2>
+                            <p style="font-size:12px; color:var(--gray-600);">Siswa SMA / SMK • Identitas Dilindungi</p>
+                        </div>
+                    </div>
+
+                    <div class="menu-list">
+                        <div class="menu-item" onclick="openPage('status')">
+                            <div class="menu-icon">📋</div>
+                            <div class="menu-text">
+                                <strong>Riwayat Pengaduan</strong>
+                                <span>Pantau progres laporan aktifmu</span>
+                            </div>
+                            <div>›</div>
+                        </div>
+
+                        <div class="menu-item" onclick="openPage('notifications')">
+                            <div class="menu-icon">🔔</div>
+                            <div class="menu-text">
+                                <strong>Notifikasi</strong>
+                                <span>Pemberitahuan pembaruan sistem</span>
+                            </div>
+                            <div>›</div>
+                        </div>
+
+                        <div class="menu-item" onclick="showPrivacy()">
+                            <div class="menu-icon">🔐</div>
+                            <div class="menu-text">
+                                <strong>Pusat Privasi (Privacy Center)</strong>
+                                <span>Kebijakan enkripsi dan keamanan data</span>
+                            </div>
+                            <div>›</div>
+                        </div>
+
+                        <div class="menu-item" onclick="openPage('school')">
+                            <div class="menu-icon">🏫</div>
+                            <div class="menu-text">
+                                <strong>Mode Verifikasi Sekolah</strong>
+                                <span>Simulasi dashboard penanganan tim sekolah</span>
+                            </div>
+                            <div>›</div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- MOBILE BOTTOM NAVIGATION BAR -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" id="mob-nav-home" onclick="openPage('home')">
+                <span class="nav-icon">⌂</span>
+                <span>Beranda</span>
+            </button>
+
+            <button class="nav-btn" id="mob-nav-report" onclick="openPage('report')">
+                <span class="nav-icon">📝</span>
+                <span>Lapor</span>
+            </button>
+
+            <button class="nav-btn" id="mob-nav-nala" onclick="openPage('nala')">
+                <span class="nav-icon">🤖</span>
+                <span>Nala</span>
+            </button>
+
+            <button class="nav-btn" id="mob-nav-education" onclick="openPage('education')">
+                <span class="nav-icon">📚</span>
+                <span>Edukasi</span>
+            </button>
+
+            <button class="nav-btn" id="mob-nav-profile" onclick="openPage('profile')">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast" id="toast"></div>
+
+    <!-- PRIVACY CENTER MODAL -->
+    <div class="modal" id="modal">
+        <div class="modal-box">
+            <h3 id="modalTitle" style="font-size:18px; color:var(--navy); margin-bottom:10px;">🔐 Privacy Center</h3>
+            <p id="modalText" style="font-size:12px; color:var(--gray-600); line-height:1.6; margin-bottom:20px;">
+                Aplikasi Pelapor Muda menjamin kerahasiaan identitas pelapor. Laporan hanya dikelola oleh tim verifikasi resmi sekolah dan tidak disebarluaskan secara publik.
+            </p>
+            <button class="btn btn-primary btn-full" onclick="closeModal()">Saya Mengerti</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // PAGE NAVIGATION LOGIC
+        const pageTitles = {
+            home: 'Beranda',
+            report: 'Buat Pengaduan',
+            submitted: 'Laporan Diterima',
+            status: 'Status Laporan',
+            nala: 'Nala AI Assistant',
+            education: 'Edukasi & Kuis',
+            school: 'Verifikasi Sekolah',
+            notifications: 'Notifikasi',
+            profile: 'Profil Pelajar'
+        };
+
+        function openPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+            // Show selected page
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+
+            // Update Header Title
+            const titleElement = document.getElementById('pageTitleDisplay');
+            if (titleElement && pageTitles[pageId]) {
+                titleElement.textContent = pageTitles[pageId];
+            }
+
+            // Sync Mobile Nav
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const mobBtn = document.getElementById('mob-nav-' + pageId);
+            if (mobBtn) mobBtn.classList.add('active');
+
+            // Sync Desktop Sidebar
+            document.querySelectorAll('.sidebar-item').forEach(btn => btn.classList.remove('active'));
+            const deskBtn = document.getElementById('desk-nav-' + pageId);
+            if (deskBtn) deskBtn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // REPORT WIZARD STEPS LOGIC
+        let selectedUrgency = "";
+
+        function nextStep(step) {
+            if (step === 2) {
+                if (!document.getElementById('factCheck').checked || 
+                    !document.getElementById('notRevenge').checked || 
+                    !document.getElementById('privacyCheck').checked) {
+                    showToast('Centang semua persetujuan terlebih dahulu.');
+                    return;
+                }
+            }
+
+            if (step === 3) {
+                const category = document.getElementById('category').value;
+                const location = document.getElementById('location').value;
+                const chronology = document.getElementById('chronology').value;
+
+                if (!category || !location || !chronology || !selectedUrgency) {
+                    showToast('Isi kategori, urgensi, lokasi, dan kronologi.');
+                    return;
+                }
+            }
+
+            document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
+            document.getElementById('step' + step).style.display = 'block';
+
+            document.querySelectorAll('.progress-step').forEach(s => s.classList.remove('active'));
+            for (let i = 1; i <= step; i++) {
+                document.getElementById('p' + i).classList.add('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectUrgency(element, val) {
+            document.querySelectorAll('.choice-btn').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedUrgency = val;
+        }
+
+        function submitReport() {
+            if (!document.getElementById('final1').checked || 
+                !document.getElementById('final2').checked || 
+                !document.getElementById('final3').checked || 
+                !document.getElementById('final4').checked) {
+                showToast('Centang semua konfirmasi pemeriksaan akhir.');
+                return;
+            }
+
+            const reporter = document.getElementById('reporter').value;
+            if (!reporter) {
+                showToast('Isi nama/identitas pelapor untuk verifikasi.');
+                return;
+            }
+
+            const randomNum = 'PM-' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('reportNumber').textContent = randomNum;
+
+            openPage('submitted');
+            showToast('Pengaduan berhasil terkirim!');
+        }
+
+        // NALA CHATBOT LOGIC
+        function askNala(type) {
+            const chatBox = document.getElementById('chat');
+            let q = "";
+            let a = "";
+
+            if (type === "kapan") {
+                q = "Kapan sebaiknya saya melapor?";
+                a = "Sebaiknya kamu melapor saat melihat atau mengalami kejadian yang berpotensi membahayakan fisik, mental, atau keamanan sekolah. Sampaikan informasi sesuai fakta yang kamu ketahui.";
+            } else if (type === "bukti") {
+                q = "Bukti apa yang perlu disiapkan?";
+                a = "Gunakan bukti yang sudah ada seperti foto, pesan tertulis, atau saksi. Jangan mengambil risiko yang membahayakan dirimu hanya demi mendapat bukti baru.";
+            } else if (type === "fitnah") {
+                q = "Bagaimana agar tidak jadi fitnah?";
+                a = "Fokus pada kronologi objektif (apa, kapan, di mana, siapa). Hindari asumsi, prasangka, atau tuduhan tanpa dasar faktual.";
+            } else if (type === "aman") {
+                q = "Apakah identitas saya aman?";
+                a = "Ya! Identitasmu dilindungi di bawah sistem internal sekolah dan tidak dipublikasikan secara umum.";
+            } else if (type === "darurat") {
+                q = "Bagaimana jika situasi darurat?";
+                a = "Jika dalam bahaya langsung, prioritaskan keselamatanmu! Cari bantuan guru terdekat atau hubungi orang tuamu secara langsung.";
+            }
+
+            chatBox.innerHTML += `<div class="bubble user">${q}</div>`;
+
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="bubble bot">${a}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 300);
+        }
+
+        // QUIZ LOGIC
+        function quiz(el, isCorrect) {
+            document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('correct', 'wrong'));
+            const res = document.getElementById('quizResult');
+
+            if (isCorrect) {
+                el.classList.add('correct');
+                res.textContent = "✓ Tepat sekali! Menyaring informasi adalah kunci tindakan bijak.";
+                res.style.color = "var(--green)";
+            } else {
+                el.classList.add('wrong');
+                res.textContent = "✕ Kurang tepat. Hindari memperkeruh situasi dengan ikut menyebarkan pesan tidak pasti.";
+                res.style.color = "var(--red)";
+            }
+        }
+
+        // TOAST & MODAL UTILS
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+
+        function showPrivacy() {
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        // INIT DATE
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('eventDate').value = now.toISOString().slice(0, 16);
+        });
+    </script>
+</body>
+</html>
