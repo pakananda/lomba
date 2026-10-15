@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Laporan - Pelapor Muda</title>
+    <style>
+        :root { --navy: #092B55; --blue-primary: #1261A6; --border: #DCE6F0; }
+        body { font-family: 'Inter', sans-serif; background: #F0F5FA; padding: 20px; color: #172033; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { background: white; border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { color: var(--navy); margin-bottom: 16px; font-size: 20px; }
+        input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 12px; font-size: 14px; box-sizing: border-box;}
+        .btn { background: var(--blue-primary); color: white; padding: 12px; border: none; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; background: #E0F2FE; color: #0284C7; margin-top: 8px; }
+        .detail-row { margin-bottom: 12px; border-bottom: 1px solid #E8EEF5; padding-bottom: 8px; }
+        .detail-row label { font-size: 11px; color: #64748B; text-transform: uppercase; font-weight: bold; display: block; }
+        .detail-row span { font-size: 14px; color: var(--navy); font-weight: 600; }
+        .nav-link { display: inline-block; margin-bottom: 16px; color: var(--blue-primary); text-decoration: none; font-size: 13px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="nav-link">← Kembali ke Form Utama Pelapor Muda</a>
+        <div class="card">
+            <h2>📍 Cek Status Pengaduan</h2>
+            <p style="font-size: 12px; color: #64748B; margin-bottom: 16px;">Masukkan Kode ID Laporan Anda (Contoh: PLP-123456).</p>
+            <input type="text" id="txtId" placeholder="Kode ID Laporan">
+            <button class="btn" onclick="cariLaporan()" id="btnCari">Cari Laporan</button>
+        </div>
+
+        <div id="hasilSearch" class="card" style="display: none;">
+            <div class="detail-row">
+                <label>ID Laporan</label>
+                <span id="resId">-</span>
+            </div>
+            <div class="detail-row">
+                <label>Status Penanganan</label>
+                <div><span class="status-badge" id="resStatus">-</span></div>
+            </div>
+            <div class="detail-row">
+                <label>Kategori & Lokasi</label>
+                <span id="resKategori">-</span>
+            </div>
+            <div class="detail-row">
+                <label>Detail Kejadian</label>
+                <span id="resDetail" style="font-weight: normal; font-size: 13px;">-</span>
+            </div>
+            <div class="detail-row" style="border:none;">
+                <label>Catatan Petugas / Sekolah</label>
+                <span id="resCatatan" style="color: #10B981;">-</span>
+            </div>
+            <div id="resBuktiBox" class="detail-row" style="border:none; display:none;">
+                <label>Lampiran Bukti Foto</label>
+                <a id="resBuktiLink" href="#" target="_blank" style="color: var(--blue-primary); font-weight: bold; text-decoration: underline; font-size: 12px;">Lihat Bukti Foto di Google Drive ↗</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzlJlA2opy5-ytSg4UykAq9kYFtQ3sJsbFckAVWc3-RWRMJ1Q8RXr0tPHqYBKhPHD97/exec";
+
+        function cariLaporan() {
+            const id = document.getElementById('txtId').value.trim();
+            if(!id) return alert('Masukkan ID Laporan!');
+            
+            const btn = document.getElementById('btnCari');
+            btn.disabled = true;
+            btn.innerText = 'Mencari...';
+
+            fetch(`${API_URL}?action=cekStatus&idLaporan=${encodeURIComponent(id)}`)
+            .then(res => res.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerText = 'Cari Laporan';
+                if(res.found) {
+                    document.getElementById('hasilSearch').style.display = 'block';
+                    document.getElementById('resId').innerText = res.idLaporan;
+                    document.getElementById('resStatus').innerText = res.status;
+                    document.getElementById('resKategori').innerText = res.kategori + ' (Lokasi: ' + res.lokasi + ')';
+                    document.getElementById('resDetail').innerText = res.detail;
+                    document.getElementById('resCatatan').innerText = res.catatan || 'Belum ada catatan';
+
+                    if(res.buktiUrl && res.buktiUrl !== "-") {
+                        document.getElementById('resBuktiBox').style.display = 'block';
+                        document.getElementById('resBuktiLink').href = res.buktiUrl;
+                    } else {
+                        document.getElementById('resBuktiBox').style.display = 'none';
+                    }
+                } else {
+                    alert('ID Laporan tidak ditemukan.');
+                    document.getElementById('hasilSearch').style.display = 'none';
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerText = 'Cari Laporan';
+                alert('Gagal mengambil data.');
+            });
+        }
+    </script>
+</body>
+</html>
