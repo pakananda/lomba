@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAGA-Aplikasi</title>
+    <style>
+        :root {
+            --navy: #092B55;
+            --blue-primary: #1261A6;
+            --blue-secondary: #3D8FD1;
+            --baby-blue: #B9E3FA;
+            --baby-light: #EBF6FF;
+            --white: #FFFFFF;
+            --gray-100: #F4F8FC;
+            --gray-200: #E8EEF5;
+            --gray-400: #9AA8B6;
+            --gray-600: #64748B;
+            --gray-800: #1E293B;
+            --text-main: #172033;
+            --green: #10B981;
+            --yellow: #F59E0B;
+            --red: #EF4444;
+            --border: #DCE6F0;
+            --shadow-sm: 0 2px 8px rgba(18, 97, 166, 0.05);
+            --shadow-md: 0 8px 24px rgba(18, 97, 166, 0.08);
+            --shadow-lg: 0 16px 32px rgba(9, 43, 85, 0.12);
+            --sidebar-width: 260px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #F0F5FA;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(185, 227, 250, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(61, 143, 209, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button, input, select, textarea { font: inherit; }
+        button { cursor: pointer; border: none; outline: none; }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .desktop-sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            z-index: 40;
+            padding: 24px 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 12px 20px 12px;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sidebar-brand .logo-box {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .app-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(9, 43, 85, 0.15));
+        }
+
+        .sidebar-brand-text h1 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand-text p {
+            font-size: 11px;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: transparent;
+            text-align: left;
+            width: 100%;
+        }
+
+        .sidebar-item:hover { background: var(--baby-light); color: var(--blue-primary); }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(18, 97, 166, 0.2);
+        }
+
+        .sidebar-item .icon { font-size: 18px; }
+
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding-bottom: 80px;
+        }
+
+        .header-topbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            padding: 12px 20px;
+        }
+
+        .topbar-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .mobile-brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .mobile-brand .logo {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-brand-title { font-size: 15px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+        .mobile-brand-sub { font-size: 10px; color: var(--gray-600); }
+
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+
+        .action-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .action-icon-btn:hover { background: var(--baby-light); color: var(--blue-primary); border-color: var(--baby-blue); }
+
+        .content-area {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 16px;
+            flex: 1;
+        }
+
+        .page { display: none; animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, #104A7B 50%, var(--blue-primary) 100%);
+            border-radius: 24px;
+            padding: 28px 24px;
+            color: var(--white);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+        }
+
+        .hero-banner h2 { font-size: 24px; font-weight: 800; line-height: 1.25; margin-bottom: 10px; }
+        .hero-banner p { font-size: 13px; color: var(--baby-light); line-height: 1.6; max-width: 600px; }
+
+        .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+        .section-title { font-size: 18px; font-weight: 800; color: var(--navy); margin: 24px 0 12px; }
+
+        .quick-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .quick-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--baby-blue); }
+
+        .quick-icon-box {
+            width: 44px; height: 44px;
+            border-radius: 14px;
+            background: var(--baby-light);
+            color: var(--blue-primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-bottom: 12px;
+        }
+
+        .quick-card strong { font-size: 14px; color: var(--navy); display: block; margin-bottom: 4px; }
+        .quick-card span { font-size: 11px; color: var(--gray-600); line-height: 1.4; }
+
+        .btn {
+            border-radius: 12px; padding: 12px 18px;
+            font-weight: 700; font-size: 13px;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; cursor: pointer; transition: all 0.2s;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary)); color: var(--white); box-shadow: 0 4px 14px rgba(18, 97, 166, 0.25); }
+        .btn-full { width: 100%; }
+
+        .form-group { margin-bottom: 16px; }
+
+        label {
+            display: block; font-size: 12px; font-weight: 700; color: var(--navy);
+            margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px;
+        }
+
+        input[type="text"], input[type="datetime-local"], select, textarea {
+            width: 100%; border: 1px solid var(--border); border-radius: 12px;
+            background: var(--gray-100); padding: 12px 14px; color: var(--text-main);
+            outline: none; font-size: 13px; transition: border 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus { border-color: var(--blue-secondary); background: var(--white); }
+        textarea { min-height: 110px; resize: vertical; }
+
+        .privacy-box {
+            background: linear-gradient(135deg, var(--baby-light), #F0F8FF);
+            border: 1px solid var(--baby-blue); border-radius: 14px;
+            padding: 14px 16px; font-size: 12px; line-height: 1.5; color: #2C5282; margin: 16px 0;
+        }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+        .kpi-card small { font-size: 11px; color: var(--gray-600); text-transform: uppercase; font-weight: 700; }
+        .kpi-card strong { display: block; font-size: 28px; font-weight: 800; color: var(--navy); margin-top: 4px; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-around;
+            align-items: center; z-index: 50; padding: 0 8px;
+        }
+
+        .nav-btn {
+            border: 0; background: transparent; color: var(--gray-600);
+            font-size: 10px; font-weight: 600; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 4px; flex: 1;
+        }
+
+        .nav-btn.active { color: var(--blue-primary); font-weight: 700; }
+
+        /* NALA AI CHAT STYLING */
+        .chat-box { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin-bottom: 16px; 
+            max-height: 420px; 
+            overflow-y: auto; 
+            padding-right: 4px;
+        }
+
+        .bubble { 
+            max-width: 85%; 
+            padding: 12px 16px; 
+            border-radius: 16px; 
+            font-size: 12px; 
+            line-height: 1.6; 
+            word-wrap: break-word;
+        }
+
+        .bubble.bot { 
+            align-self: flex-start; 
+            background: var(--white); 
+            border: 1px solid var(--border); 
+            color: var(--text-main); 
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .bubble.user { 
+            align-self: flex-end; 
+            background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary)); 
+            color: var(--white); 
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 6px rgba(18, 97, 166, 0.2);
+        }
+
+        .alert-success {
+            background: #D1FAE5; color: #065F46; border: 1px solid #10B981;
+            padding: 16px; border-radius: 16px; margin-bottom: 16px; display: none;
+        }
+
+        @media (min-width: 992px) {
+            .desktop-sidebar { display: flex; }
+            .main-wrapper { margin-left: var(--sidebar-width); padding-bottom: 20px; }
+            .bottom-nav { display: none; }
+            .header-topbar { padding: 16px 32px; }
+            .mobile-brand { display: none; }
+            .content-area { padding: 32px; }
+            .grid-4 { grid-template-columns: repeat(4, 1fr); }
+            .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- DESKTOP SIDEBAR -->
+        <aside class="desktop-sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-box">
+                    <img src="naga-logo.png" alt="NAGA Logo" class="app-logo-img">
+                </div>
+                <div class="sidebar-brand-text">
+                    <h1>LAPOR NAGA</h1>
+                    <p>Nala • Siaga</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <button class="sidebar-item active" id="desk-nav-home" onclick="openPage('home')">
+                    <span class="icon">⌂</span> Beranda
+                </button>
+                <button class="sidebar-item" id="desk-nav-report" onclick="openPage('report')">
+                    <span class="icon">📝</span> Buat Pengaduan
+                </button>
+                <button class="sidebar-item" id="desk-nav-status" onclick="openPage('status')">
+                    <span class="icon">📍</span> Status Laporan
+                </button>
+                <button class="sidebar-item" id="desk-nav-nala" onclick="openPage('nala')">
+                    <span class="icon">🤖</span> Tanya Nala AI
+                </button>
+                <button class="sidebar-item" id="desk-nav-school" onclick="openPage('school')">
+                    <span class="icon">🏫</span> Verifikasi Sekolah
+                </button>
+                <button class="sidebar-item" id="desk-nav-profile" onclick="openPage('profile')">
+                    <span class="icon">👤</span> Profil Pelajar
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="privacy-box" style="margin:0; font-size:11px;">
+                    🛡️ Sistem Terverifikasi Sekolah & Pihak Terkait.
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            <header class="header-topbar">
+                <div class="topbar-content">
+                    <div class="mobile-brand">
+                        <div class="logo">
+                            <img src="naga-logo.png" alt="NAGA Logo" class="app-logo-img">
+                        </div>
+                        <div>
+                            <div class="mobile-brand-title">PELAPOR MUDA</div>
+                            <div class="mobile-brand-sub">Aman & Terverifikasi</div>
+                        </div>
+                    </div>
+
+                    <div style="font-weight: 700; color: var(--navy); font-size: 16px;" id="pageTitleDisplay">
+                        Beranda
+                    </div>
+
+                    <div class="header-actions">
+                        <button class="action-icon-btn" onclick="openPage('report')" title="Buat Laporan Baru">📝</button>
+                        <button class="action-icon-btn" onclick="openPage('profile')" title="Profil">👤</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-area">
+
+                <!-- 1. HALAMAN BERANDA -->
+                <section class="page active" id="home">
+                    <div class="hero-banner">
+                        <span class="hero-badge">SMART REPORTING SYSTEM</span>
+                        <h2>Melapor dengan bukti.<br>Menjaga dengan bijak.</h2>
+                        <p>Ruang digital bagi pelajar untuk menyampaikan permasalahan secara aman, terarah, dan terverifikasi melalui kolaborasi sekolah dan pihak terkait.</p>
+                    </div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <small>Total Laporan</small>
+                            <strong id="kpiTotal">0</strong>
+                        </div>
+                        <div class="kpi-card">
+                            <small>Diproses</small>
+                            <strong id="kpiProses" style="color: var(--blue-secondary);">0</strong>
+                        </div>
+                        <div class="kpi-card">
+                            <small>Selesai</small>
+                            <strong id="kpiSelesai" style="color: var(--green);">0</strong>
+                        </div>
+                        <div class="kpi-card">
+                            <small>Menunggu</small>
+                            <strong id="kpiVerifikasi" style="color: var(--yellow);">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Aksi Cepat</div>
+                    <div class="grid-4">
+                        <div class="quick-card" onclick="openPage('report')">
+                            <div class="quick-icon-box">📝</div>
+                            <strong>Buat Pengaduan</strong>
+                            <span>Kirim laporan kejadian dengan bukti foto aman.</span>
+                        </div>
+                        <div class="quick-card" onclick="openPage('status')">
+                            <div class="quick-icon-box">📍</div>
+                            <strong>Cek Status</strong>
+                            <span>Pantau progress tindak lanjut laporan Anda.</span>
+                        </div>
+                        <div class="quick-card" onclick="openPage('nala')">
+                            <div class="quick-icon-box">🤖</div>
+                            <strong>Tanya Nala AI</strong>
+                            <span>Konsultasi awal & edukasi pencegahan kejahatan.</span>
+                        </div>
+                        <div class="quick-card" onclick="window.open('admin.html', '_blank')">
+                            <div class="quick-icon-box">🏫</div>
+                            <strong>Panel Sekolah</strong>
+                            <span>Akses pemantauan khusus pihak sekolah/admin.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. HALAMAN BUAT PENGADUAN -->
+                <section class="page" id="report">
+                    <div id="alertSuccess" class="alert-success">
+                        <strong>🎉 Laporan Berhasil Dikirim!</strong><br>
+                        ID Laporan Anda: <b id="outIdLaporan" style="font-size:16px; color:#047857;">-</b><br>
+                        <small>Simpan ID ini untuk melacak status penanganan laporan Anda di menu Cek Status.</small>
+                    </div>
+
+                    <div class="card">
+                        <h2 style="font-size: 18px; color: var(--navy); margin-bottom: 16px;">Form Pengaduan Kejadian</h2>
+                        <form id="formPengaduan">
+                            <div class="form-group">
+                                <label>Kategori Kejadian / Kejahatan</label>
+                                <select id="kategori" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="Perundungan (Bullying)">Perundungan (Bullying)</option>
+                                    <option value="Kekerasan Fisik">Kekerasan Fisik</option>
+                                    <option value="Pencurian / Pemerasan">Pencurian / Pemerasan</option>
+                                    <option value="Pelecehan Seksual">Pelecehan Seksual</option>
+                                    <option value="Narkoba / Miras">Narkoba / Miras</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Waktu Kejadian</label>
+                                <input type="datetime-local" id="waktu" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Lokasi Kejadian</label>
+                                <input type="text" id="lokasi" placeholder="Misal: Kantin Belakang, Kelas 10B, Gerbang" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Detail Kronologi Kejadian</label>
+                                <textarea id="detail" placeholder="Jelaskan secara ringkas kejadian yang Anda alami/lihat..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Upload Bukti Kejadian (Foto/Gambar)</label>
+                                <input type="file" id="fileBukti" accept="image/*" onchange="previewImage(this)">
+                                <div id="previewArea" style="margin-top: 10px; display: none;">
+                                    <img id="imgPreview" src="" style="max-width: 100%; max-height: 180px; border-radius: 12px; border: 1px solid var(--border);">
+                                </div>
+                            </div>
+
+                            <div class="privacy-box">
+                                🔒 <b>Jaminan Kerahasiaan:</b> Anda berhak mengosongkan Nama jika ingin melapor secara Anonim demi keamanan diri Anda.
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama Pelapor (Opsional)</label>
+                                <input type="text" id="nama" placeholder="Kosongkan jika ingin Anonim">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kontak / No. WhatsApp (Opsional)</label>
+                                <input type="text" id="kontak" placeholder="Untuk menerima pemberitahuan tindak lanjut">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-full" id="btnSubmit">Kirim Pengaduan Sekarang</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 3. HALAMAN CEK STATUS -->
+                <section class="page" id="status">
+                    <div class="card">
+                        <h2 style="font-size: 18px; color: var(--navy); margin-bottom: 12px;">📍 Cek Status Pengaduan</h2>
+                        <p style="font-size: 12px; color: var(--gray-600); margin-bottom: 16px;">Masukkan Kode ID Laporan Anda (Contoh: PLP-123456).</p>
+                        
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="txtIdCek" placeholder="Masukkan ID Laporan...">
+                            <button class="btn btn-primary" onclick="cariStatus()" id="btnCariStatus">Cari</button>
+                        </div>
+                    </div>
+
+                    <div id="hasilCekArea" class="card" style="display: none;">
+                        <h3 style="font-size: 15px; color: var(--navy); margin-bottom: 12px;">Hasil Pencarian Laporan:</h3>
+                        <div style="font-size: 13px; line-height: 1.8;">
+                            <p><b>ID Laporan:</b> <span id="outId">-</span></p>
+                            <p><b>Status:</b> <span id="outStatus" style="color: var(--blue-primary); font-weight: bold;">-</span></p>
+                            <p><b>Kategori:</b> <span id="outKategori">-</span></p>
+                            <p><b>Lokasi:</b> <span id="outLokasi">-</span></p>
+                            <p><b>Detail:</b> <span id="outDetail">-</span></p>
+                            <p><b>Catatan Sekolah:</b> <span id="outCatatan" style="color: var(--green); font-weight: 600;">-</span></p>
+                            <p id="outBuktiBox" style="margin-top: 8px; display:none;">
+                                <b>Bukti Foto:</b><br>
+                                <a id="outBuktiLink" href="#" target="_blank" class="btn btn-primary" style="padding: 6px 12px; font-size: 11px; margin-top: 4px;">Lihat Bukti Foto di Drive ↗</a>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. HALAMAN TANYA NALA AI -->
+                <section class="page" id="nala">
+                    <div class="card">
+                        <h2 style="font-size: 18px; color: var(--navy); margin-bottom: 4px;">🤖 Tanya Nala AI</h2>
+                        <p style="font-size: 12px; color: var(--gray-600); margin-bottom: 16px;">Asisten pintar berbasis AI pendamping pelajar untuk konsultasi & informasi keamanan sekolah.</p>
+
+                        <div class="chat-box" id="chatBox">
+                            <div class="bubble bot">
+                                Halo! Saya <b>Nala AI</b> 🤖, asisten pintar Pelapor Muda. Ceritakan apa yang kamu rasakan, tanyakan tentang privasi, atau konsultasikan tindakan kejahatan/bullying di sekolah. Saya siap membantumu!
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="txtNala" placeholder="Ketik pertanyaan atau kecemasanmu di sini..." onkeypress="if(event.key==='Enter') kirimChatNala()">
+                            <button class="btn btn-primary" id="btnKirimNala" onclick="kirimChatNala()">Kirim</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. HALAMAN VERIFIKASI SEKOLAH -->
+                <section class="page" id="school">
+                    <div class="card">
+                        <h2 style="font-size: 18px; color: var(--navy); margin-bottom: 12px;">🏫 Status Verifikasi Sekolah</h2>
+                        <div class="privacy-box">
+                            Sistem ini terhubung langsung dengan Tim Bimbingan Konseling (BK) dan Kesiswaan Sekolah secara resmi & terverifikasi.
+                        </div>
+                        <p style="font-size: 13px; color: var(--gray-600);">Setiap laporan masuk dijamin diterima oleh pihak berwenang di sekolah secara tertutup demi keamanan saksi/korban.</p>
+                    </div>
+                </section>
+
+                <!-- 6. HALAMAN PROFIL PELAJAR -->
+                <section class="page" id="profile">
+                    <div class="card">
+                        <h2 style="font-size: 18px; color: var(--navy); margin-bottom: 12px;">👤 Profil Pelajar</h2>
+                        <p style="font-size: 13px; color: var(--gray-600);">Sistem Akses Aman Pelapor Muda. Anda dapat melapor secara anonim tanpa login akun.</p>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" id="mob-nav-home" onclick="openPage('home')">
+            <span class="nav-icon">⌂</span> Beranda
+        </button>
+        <button class="nav-btn" id="mob-nav-report" onclick="openPage('report')">
+            <span class="nav-icon">📝</span> Lapor
+        </button>
+        <button class="nav-btn" id="mob-nav-status" onclick="openPage('status')">
+            <span class="nav-icon">📍</span> Status
+        </button>
+        <button class="nav-btn" id="mob-nav-nala" onclick="openPage('nala')">
+            <span class="nav-icon">🤖</span> Nala AI
+        </button>
+    </nav>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzOPZ5t8HUq5LGHJDMKjnTy38IlSBImilGORz8J1yFuhvCbIJFmUbzTY48xcl59pXgM/exec";
+        let base64File = "";
+
+        function openPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            const targetPage = document.getElementById(pageId);
+            if(targetPage) targetPage.classList.add('active');
+
+            const deskBtn = document.getElementById('desk-nav-' + pageId);
+            if(deskBtn) deskBtn.classList.add('active');
+
+            const mobBtn = document.getElementById('mob-nav-' + pageId);
+            if(mobBtn) mobBtn.classList.add('active');
+
+            const titleMap = {
+                'home': 'Beranda', 'report': 'Buat Pengaduan',
+                'status': 'Cek Status Laporan', 'nala': 'Tanya Nala AI',
+                'school': 'Verifikasi Sekolah', 'profile': 'Profil Pelajar'
+            };
+            document.getElementById('pageTitleDisplay').innerText = titleMap[pageId] || 'Pelapor Muda';
+
+            if(pageId === 'home') loadKPIData();
+        }
+
+        function previewImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    base64File = e.target.result;
+                    document.getElementById('imgPreview').src = e.target.result;
+                    document.getElementById('previewArea').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function kirimChatNala() {
+            const txt = document.getElementById('txtNala');
+            const msg = txt.value.trim();
+            if (!msg) return;
+
+            const box = document.getElementById('chatBox');
+            const btn = document.getElementById('btnKirimNala');
+
+            box.innerHTML += `<div class="bubble user">${escapeHtml(msg)}</div>`;
+            txt.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            const typingId = 'typing-' + Date.now();
+            box.innerHTML += `<div class="bubble bot" id="${typingId}"><i>🤖 Nala sedang berpikir...</i></div>`;
+            box.scrollTop = box.scrollHeight;
+            btn.disabled = true;
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "tanyaNala",
+                    prompt: msg
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                btn.disabled = false;
+                const typingElem = document.getElementById(typingId);
+                if (typingElem) typingElem.remove();
+
+                const replyText = res.reply ? res.reply.replace(/\n/g, '<br>') : "Maaf, Nala sedang tidak bisa merespons.";
+                box.innerHTML += `<div class="bubble bot">${replyText}</div>`;
+                box.scrollTop = box.scrollHeight;
+            })
+            .catch(err => {
+                btn.disabled = false;
+                const typingElem = document.getElementById(typingId);
+                if (typingElem) typingElem.remove();
+
+                box.innerHTML += `<div class="bubble bot" style="color:red;">Maaf, gagal menghubungkan ke server Nala AI.</div>`;
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        document.getElementById('formPengaduan').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerText = 'Mengirim Laporan...';
+
+            const fileInput = document.getElementById('fileBukti');
+            const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+
+            const payload = {
+                action: "buatPengaduan",
+                data: {
+                    kategori: document.getElementById('kategori').value,
+                    waktu: document.getElementById('waktu').value,
+                    lokasi: document.getElementById('lokasi').value,
+                    detail: document.getElementById('detail').value,
+                    nama: document.getElementById('nama').value,
+                    kontak: document.getElementById('kontak').value,
+                    fileBase64: base64File,
+                    fileName: fileName
+                }
+            };
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerText = 'Kirim Pengaduan Sekarang';
+                if(res.status === "success") {
+                    document.getElementById('outIdLaporan').innerText = res.idLaporan;
+                    document.getElementById('alertSuccess').style.display = 'block';
+                    document.getElementById('formPengaduan').reset();
+                    document.getElementById('previewArea').style.display = 'none';
+                    base64File = "";
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert('Gagal mengirim laporan: ' + res.message);
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerText = 'Kirim Pengaduan Sekarang';
+                alert('Terjadi kesalahan koneksi ke server Apps Script.');
+            });
+        });
+
+        function cariStatus() {
+            const id = document.getElementById('txtIdCek').value.trim();
+            if(!id) return alert('Masukkan ID Laporan!');
+
+            const btn = document.getElementById('btnCariStatus');
+            btn.disabled = true;
+            btn.innerText = 'Mencari...';
+
+            fetch(`${API_URL}?action=cekStatus&idLaporan=${encodeURIComponent(id)}`)
+            .then(res => res.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerText = 'Cari';
+                if(res.found) {
+                    document.getElementById('hasilCekArea').style.display = 'block';
+                    document.getElementById('outId').innerText = res.idLaporan;
+                    document.getElementById('outStatus').innerText = res.status;
+                    document.getElementById('outKategori').innerText = res.kategori;
+                    document.getElementById('outLokasi').innerText = res.lokasi;
+                    document.getElementById('outDetail').innerText = res.detail;
+                    document.getElementById('outCatatan').innerText = res.catatan || 'Belum ada catatan';
+
+                    if(res.buktiUrl && res.buktiUrl !== "-") {
+                        document.getElementById('outBuktiBox').style.display = 'block';
+                        document.getElementById('outBuktiLink').href = res.buktiUrl;
+                    } else {
+                        document.getElementById('outBuktiBox').style.display = 'none';
+                    }
+                } else {
+                    alert('ID Laporan tidak ditemukan.');
+                    document.getElementById('hasilCekArea').style.display = 'none';
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerText = 'Cari';
+                alert('Gagal mengambil data status.');
+            });
+        }
+
+        function loadKPIData() {
+            fetch(`${API_URL}?action=ambilSemua`)
+            .then(res => res.json())
+            .then(res => {
+                const data = res.data || [];
+                document.getElementById('kpiTotal').innerText = data.length;
+                document.getElementById('kpiProses').innerText = data.filter(d => d.status === 'Sedang Diproses').length;
+                document.getElementById('kpiSelesai').innerText = data.filter(d => d.status === 'Selesai Ditangani').length;
+                document.getElementById('kpiVerifikasi').innerText = data.filter(d => d.status === 'Menunggu Verifikasi').length;
+            })
+            .catch(err => console.error(err));
+        }
+
+        window.onload = function() {
+            loadKPIData();
+        };
+    </script>
+</body>
+</html>
